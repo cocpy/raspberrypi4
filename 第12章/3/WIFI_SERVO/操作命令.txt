@@ -1,0 +1,15 @@
+开启摄像头：
+
+1、进入mjpg-streamer 软件所在的目录，开启摄像头。打开终端输入
+	cd mjpg-streamer/mjpg-streamer-experimental/
+2、进入此目录后输入
+	sudo ./start.sh
+
+
+启动程序：
+1、另开一个控制端
+2、进入WIFI_SERVO，编译文件
+	cd /home/pi/Demo/WIFI_SERVO/examples
+	sudo gcc car_server.c -o car_server pca9685.c -lwiringPi -lwiringPiDev
+3、启动
+	sudo ./car_server 2001
