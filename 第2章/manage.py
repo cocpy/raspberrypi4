@@ -30,7 +30,7 @@ def getCPUuse():
 # Index 0: total disk space
 # Index 1: used disk space
 # Index 2: remaining disk space
-# Index 3: percentage of disk used
+# Index 4: percentage of disk used
 def getDiskSpace():
     p = os.popen("df -h /")
     i = 0

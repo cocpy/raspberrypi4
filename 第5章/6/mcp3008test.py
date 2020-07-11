@@ -31,7 +31,7 @@ def print_message():
     print('|    | Din | connect to| MOSI|     |')
     print('|    | Dout| connect to| MISO|     |')
     print('|    | CLK | connect to| SCLK|     |')
-    print('|    | CH0 | connect to| 3.3V|     |')
+    print('|    | CH0 | connect to| 4.3V|     |')
     print('|    | CH1 | connect to| GND |     |')
     print('|   -----------------------------  |')
     print('|                            OSOYOO|')

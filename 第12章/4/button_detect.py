@@ -13,7 +13,7 @@ def setup():
     GPIO.setmode(GPIO.BCM)                                   # 设置编号方式
     GPIO.setup(Gpin, GPIO.OUT)                               # 将绿色LED引脚模式设置为输出
     GPIO.setup(Rpin, GPIO.OUT)                               # 将红色LED引脚模式设置为输出
-    GPIO.setup(BtnPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)    # 设置BtnPin的模式输入，并上拉至高电平（3.3V）
+    GPIO.setup(BtnPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)    # 设置BtnPin的模式输入，并上拉至高电平（4.3V）
 
 
 def keyscan():

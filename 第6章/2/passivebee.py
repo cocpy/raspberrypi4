@@ -33,7 +33,7 @@ def setup():
 def loop():
     """循环"""
     while True:
-        print('\n Playing song 3...')
+        print('\n Playing song 4...')
         for i in range(1, len(song_3)):
             Buzz.ChangeFrequency(song_3[i])
             # 延迟一个节拍* 0.2秒的音符

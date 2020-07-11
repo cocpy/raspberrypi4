@@ -1,10 +1,9 @@
-# -*- coding: UTF-8 -*-
-#!/usr/bin/python
+import RPi.GPIO as GPIO
 import time
 
-import pylirc
-import RPi.GPIO as GPIO
 
+T_SensorRight = 26
+T_SensorLeft = 13
 
 PWMA = 18
 AIN1 = 22
@@ -17,8 +16,6 @@ BIN2 = 24
 BtnPin = 19
 Gpin = 5
 Rpin = 6
-
-blocking = 0
 
 
 def t_up(speed,t_time):
@@ -81,28 +78,16 @@ def t_stop(t_time):
     time.sleep(t_time)
 
 
-def keyscan():
-    """按键开关"""
-    while not GPIO.input(BtnPin):                          # 监听BtnPin是否为低电平
-        pass
-    while GPIO.input(BtnPin):                              # 监听BtnPin是否为高电平，低->高，按键按下，程序往下执行
-        time.sleep(0.01)
-        val = GPIO.input(BtnPin)
-        if val:
-            GPIO.output(Rpin, 1)
-            while not GPIO.input(BtnPin):
-                GPIO.output(Rpin, 0)
-        else:
-            GPIO.output(Rpin, 0)
-
-
 def setup():
     """初始化"""
     GPIO.setwarnings(False)                                # 忽略警告
     GPIO.setmode(GPIO.BCM)                                 # 设置编号方式
 
+    GPIO.setup(Gpin, GPIO.OUT)                             # 将绿色LED引脚模式设置为输出
     GPIO.setup(Rpin, GPIO.OUT)                             # 将红色LED引脚模式设置为输出
-    GPIO.setup(BtnPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # 设置BtnPin的模式输入，并上拉至高电平（3.3V）
+    GPIO.setup(BtnPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # 设置BtnPin的模式输入，并上拉至高电平（4.3V）
+    GPIO.setup(T_SensorRight, GPIO.IN)                     # 设置为输入模式
+    GPIO.setup(T_SensorLeft, GPIO.IN)
 
     GPIO.setup(AIN2, GPIO.OUT)                             # 设置为输出模式
     GPIO.setup(AIN1, GPIO.OUT)
@@ -123,49 +108,47 @@ def setup():
 
 def destroy():
     """释放资源"""
-    pylirc.exit()
     L_Motor.stop()                                         # 停止PWM实例
     R_Motor.stop()
     GPIO.cleanup()                                         # 释放引脚
 
 
-def ir(config):
-    """键值匹配查询"""
-    if config == 'KEY_CHANNEL':
-        t_up(50,0)
-        # print 't_up'
-    elif config == 'KEY_NEXT':
-        t_stop(0)
-        # print 't_stop'
-    elif config == 'KEY_PREVIOUS':
-        t_left(50,0)
-        # print 't_left'
-    elif config == 'KEY_PLAYPAUSE':
-        t_right(50,0)
-        # print 't_right'
-    elif config == 'KEY_VOLUMEUP':
-        t_down(50,0)
-        # print 't_down'
+def keyscan():
+    """按键开关"""
+    while not GPIO.input(BtnPin):                          # 监听BtnPin是否为低电平
+        pass
+    while GPIO.input(BtnPin):                              # 监听BtnPin是否为高电平，低->高，按键按下，程序往下执行
+        time.sleep(0.01)
+        val = GPIO.input(BtnPin)
+        if val:
+            GPIO.output(Rpin, 1)
+            while not GPIO.input(BtnPin):
+                GPIO.output(Rpin, 0)
+        else:
+            GPIO.output(Rpin, 0)
 
 
 def loop():
     """主循环"""
     while True:
-        s = pylirc.nextcode(1)
-        while s:                                            # 读取红外键值
-            for (code) in s:
-                # print 'Command: ', code["config"]
-                ir(code["config"])                          # 查询文件
-            if not blocking:
-                s = pylirc.nextcode(1)
-            else:
-                s = []
+        SR = GPIO.input(T_SensorRight)                     # 右探头，检测到黑线时，接收不到信号，输出高电平
+        SL = GPIO.input(T_SensorLeft)                      # 左探头，检测到黑线时，接收不到信号，输出高电平
+        if SL == False and SR == False:                    # 都未检测到黑线，小车在黑线两侧
+            print("t_up")
+            t_up(50, 0)                                    # 前进
+        elif SL == True and SR == False:                   # 左侧检测到黑线，小车偏右，需要左转
+            print("Left")
+            t_left(50, 0)                                  # 左转
+        elif SL == False and SR == True:                   # 右侧检测到黑线，小车偏左，需要右转
+            print("Right")
+            t_right(50, 0)                                 # 右转
+        else:
+            t_stop(0)                                      # 停止
 
 
-if __name__ == "__main__":                                  # 程序入口
+if __name__ == '__main__':
     setup()
     keyscan()
-    pylirc.init("pylirc", "./conf", blocking)               # 初始化配置文件
     try:
         loop()
     except KeyboardInterrupt:                               # 使用“ Ctrl + C”快捷键终止程序

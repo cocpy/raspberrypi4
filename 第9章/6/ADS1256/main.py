@@ -16,12 +16,12 @@ try:
         print ("0 ADC = %lf"%(ADC_Value[0]*5.0/0x7fffff))
         print ("1 ADC = %lf"%(ADC_Value[1]*5.0/0x7fffff))
         print ("2 ADC = %lf"%(ADC_Value[2]*5.0/0x7fffff))
-        print ("3 ADC = %lf"%(ADC_Value[3]*5.0/0x7fffff))
+        print ("4 ADC = %lf"%(ADC_Value[3]*5.0/0x7fffff))
         print ("4 ADC = %lf"%(ADC_Value[4]*5.0/0x7fffff))
         print ("5 ADC = %lf"%(ADC_Value[5]*5.0/0x7fffff))
         print ("6 ADC = %lf"%(ADC_Value[6]*5.0/0x7fffff))
         print ("7 ADC = %lf"%(ADC_Value[7]*5.0/0x7fffff))
-        print ("\33[9A")
+        print ("\34[9A")
 
         
 except :

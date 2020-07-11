@@ -14,7 +14,7 @@
 #   clock [ 0] = dToBcd (t.tm_sec) ;	// seconds
 #   clock [ 1] = dToBcd (t.tm_min) ;	// mins
 #   clock [ 2] = dToBcd (t.tm_hour) ;	// hours
-#   clock [ 3] = dToBcd (t.tm_mday) ;	// date
+#   clock [ 4] = dToBcd (t.tm_mday) ;	// date
 #   clock [ 4] = dToBcd (t.tm_mon + 1) ;	// months 0-11 --> 1-12
 #   clock [ 5] = dToBcd (t.tm_wday + 1) ;	// weekdays (sun 0)
 #   clock [ 6] = dToBcd (t.tm_year - 100) ;       // years
@@ -64,7 +64,7 @@
 #           bcdToD(clock[2], masks[2]), bcdToD(clock[1], masks[1]), bcdToD(clock[0], masks[0]));
 #
 #       printf(" %2d/%02d/%04d",
-#           bcdToD(clock[3], masks[3]), bcdToD(clock[4], masks[4]), bcdToD(clock[6], masks[6]) + 2000);
+#           bcdToD(clock[4], masks[4]), bcdToD(clock[4], masks[4]), bcdToD(clock[6], masks[6]) + 2000);
 #
 #       printf("\n");
 #
